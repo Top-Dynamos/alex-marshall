@@ -802,6 +802,69 @@ a { color: inherit; }
 @media (prefers-reduced-motion: no-preference) { .menu[open] ul { animation: menu-in 260ms var(--ease) both; } }
 @keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .btn:active, .mark:active .ring, .to-top:active, .numbered li:active { transform: none; } }
+
+/* ===== Mobile art direction, phase 2: career to contact ===== */
+@media (max-width: 899px) {
+  /* Career: tighter rhythm, the selected milestone slides forward */
+  .career-head { margin-bottom: 40px; }
+  .stop { padding-bottom: 30px; cursor: pointer; }
+  .stop .pane { transform: translateX(-6px); opacity: 0; transition: background-color 300ms var(--ease), border-color 300ms var(--ease), transform 420ms var(--ease), opacity 420ms var(--ease); }
+  .stop.is-active .pane { transform: none; opacity: 1; box-shadow: inset 2px 0 0 var(--gold), 0 18px 36px -28px rgba(16, 25, 35, 0.45); }
+  .stop:not(.is-active) .body { color: rgba(70, 72, 77, 0.92); }
+  .stop:active .pane { background: rgba(255, 255, 255, 0.6); opacity: 1; transform: none; }
+}
+@media (max-width: 599px) {
+  /* Milestones: one hero figure, then two side by side, then the honor */
+  .m-panel { padding: 26px 20px 28px; }
+  .ach-feature { padding-block: 24px 22px; gap: 10px; }
+  .ach-feature .fig { font-size: clamp(3.1rem, 15vw, 4.2rem); }
+  .ach-feature .ctx { font-size: 1.05rem; }
+  .ach-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
+  .ach-list > div { padding-block: 18px; }
+  .ach-list > div:nth-child(2) { border-left: 1px solid var(--rule-dark); padding-left: 16px; }
+  .ach-list > div:nth-child(3) { grid-column: 1 / -1; }
+  .ach-list .fig { font-size: clamp(1.6rem, 7.6vw, 2.2rem); }
+  .ach-list > div:nth-child(3) .fig { font-size: clamp(1.7rem, 8vw, 2.3rem); }
+  .ach-list dd p { font-size: 0.9rem; line-height: 1.5; }
+  .ach-list > div:nth-child(-n+2) dt { min-height: 3em; }
+  .ach-list > div { align-content: start; }
+  .ach-note { margin-top: 20px; font-size: 0.9rem; line-height: 1.55; padding-left: 14px; }
+
+  /* Values: tighter statement */
+  .values .statement { font-size: clamp(2.3rem, 10.6vw, 3rem); }
+
+  /* Contact: bookends the hero, full bleed portrait with the headline over its edge */
+  .contact .wrap { padding-top: 0; }
+  .contact-grid { gap: 0; }
+  .contact .photo { margin-inline: calc(-16px - 3vw); width: auto; }
+  .contact .photo .frame { aspect-ratio: auto; height: min(100vw, 50svh); position: relative; }
+  .contact .photo .frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16, 25, 35, 0) 40%, rgba(16, 25, 35, 0.8) 80%, var(--night) 100%); pointer-events: none; }
+  .contact .photo img { object-position: 50% 6%; }
+  .contact-copy { position: relative; z-index: 2; margin-top: -70px; gap: 20px; }
+  .contact-copy > .kicker { color: var(--gold); }
+  .contact .h2 { font-size: clamp(2.1rem, 10vw, 2.8rem); }
+  .channels > div { grid-template-columns: minmax(0, 6rem) minmax(0, 1fr); }
+  .corner { padding-top: 4px; font-size: 1.3rem; color: var(--on-dark); }
+}
+@media (max-width: 859px) {
+  /* Lessons: three distinct surfaces, number beside the lesson instead of three identical blocks */
+  .numbered { gap: 0; margin-top: 56px; }
+  .numbered li { grid-template-columns: 3.4rem minmax(0, 1fr); column-gap: 14px; row-gap: 6px; padding: 22px 20px 24px; border-top: 0; }
+  .numbered li::before { grid-row: 1 / span 2; font-size: 2.4rem; }
+  .numbered li .h3, .numbered li p { grid-column: 2; }
+  .numbered li:nth-child(1) { background: var(--sand); border-top: 2px solid var(--gold-line); }
+  .numbered li:nth-child(2) { background: var(--sage); }
+  .numbered li:nth-child(3) { background: var(--ivory); border-bottom: 2px solid var(--gold-line); }
+  .numbered .h3 { font-size: 1.32rem; }
+  .numbered p { font-size: 0.96rem; }
+  .closing-quote { margin-top: 56px; }
+  .works { margin-top: 56px; }
+}
+@media (max-width: 359px) {
+  .ach-list { grid-template-columns: minmax(0, 1fr); }
+  .ach-list > div:nth-child(2) { border-left: 0; padding-left: 0; }
+  .ach-list > div:nth-child(-n+2) dt { min-height: 0; }
+}
 </style>
 </head>
 <body>
@@ -1299,6 +1362,7 @@ a { color: inherit; }
     stops.forEach(function (st) {
       var m = st.querySelector('.mark');
       m.addEventListener('click', function () { select(st); });
+      st.addEventListener('click', function (e) { if (!e.target.closest('.mark')) select(st); });
       st.addEventListener('mouseenter', function () { st.classList.add('is-preview'); });
       st.addEventListener('mouseleave', function () { st.classList.remove('is-preview'); });
       m.addEventListener('focus', function () { st.classList.add('is-preview'); });
