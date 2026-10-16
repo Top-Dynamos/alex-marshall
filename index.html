@@ -861,10 +861,68 @@ a { color: inherit; }
   .works { margin-top: 56px; }
 }
 @media (max-width: 359px) {
+  .facts.rich .hero-stats .tile-b .n, .facts.rich .hero-stats .tile-c .n { font-size: 1.45rem; white-space: nowrap; }
+  .facts.rich .hero-stats > div { padding-inline: 12px; }
   .ach-list { grid-template-columns: minmax(0, 1fr); }
   .ach-list > div:nth-child(2) { border-left: 0; padding-left: 0; }
   .ach-list > div:nth-child(-n+2) dt { min-height: 0; }
 }
+
+/* ===== Reveals play in both directions ===== */
+.js-motion [data-reveal].from-above:not(.is-in) { transform: translateY(-16px); }
+.js-motion .today-grid .photo.from-above:not(.is-in) .frame { clip-path: inset(0 0 100% 0); }
+.js-motion .scene.from-above:not(.is-in) .trio li { transform: translateX(18px); }
+.js-motion [data-reveal]:not(.is-in) { pointer-events: none; }
+/* Specificity fixes: press and hover states must beat the revealed resting state */
+@media (hover: none) {
+  .js-motion .numbered li[data-reveal].is-in:active { transform: translateY(-2px) scale(0.99); box-shadow: 0 20px 34px -26px var(--shadow-deep); background: #E4D4B5; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .js-motion .book-stage[data-reveal].is-in:hover .book { transform: rotateX(4deg) rotateY(-16deg) rotateZ(0deg) translateY(-8px); transition-duration: 900ms; }
+}
+@media (prefers-reduced-motion: reduce) { .js-motion .numbered li[data-reveal].is-in:active { transform: none; } }
+
+/* ===== Hero facts: portrait, statement and three figure tiles ===== */
+.hero .facts.rich { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; margin-top: clamp(56px, 7vw, 104px); padding-top: clamp(40px, 5vw, 64px); border-top: 1px solid var(--rule-dark); align-items: center; }
+.facts.rich .facts-photo { position: relative; margin: 0; }
+.facts.rich .facts-photo .frame { position: relative; z-index: 1; aspect-ratio: 4 / 5; overflow: hidden; background: var(--charcoal-2); box-shadow: 0 40px 70px -40px var(--shadow-deep); }
+.facts.rich .facts-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; transition: transform 1400ms var(--ease); }
+.facts.rich .facts-photo::before { content: ""; position: absolute; inset: 14px -14px -14px 14px; border: 1px solid var(--gold-edge); pointer-events: none; }
+.js-motion .facts.rich .facts-photo:not(.is-in) img { transform: scale(1.08); }
+.facts.rich .facts-body { display: grid; gap: clamp(24px, 3vw, 40px); min-width: 0; }
+.hero .facts.rich .summary { font-family: var(--display); font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem); line-height: 1.2; letter-spacing: -0.01em; max-width: 24ch; color: var(--on-dark); }
+.facts.rich .summary em { font-style: italic; color: var(--gold); }
+.hero .facts.rich dl.hero-stats { margin: 0; display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); container-type: normal; }
+.facts.rich .hero-stats > div { position: relative; padding: 20px 18px 18px; border: 1px solid rgba(245, 240, 231, 0.1); border-top: 2px solid var(--gold); border-left-width: 1px; border-radius: 3px; box-shadow: 0 24px 40px -30px var(--shadow-deep); transition: transform var(--dur-hover) var(--ease), box-shadow var(--dur-hover) var(--ease); min-width: 0; }
+.facts.rich .hero-stats .tile-a { grid-column: 1 / -1; background: linear-gradient(135deg, var(--wine), #4A1D28); }
+.facts.rich .hero-stats .tile-b { background: var(--navy); }
+.facts.rich .hero-stats .tile-c { background: var(--slate); }
+.facts.rich .hero-stats dt { color: rgba(245, 240, 231, 0.78); }
+.facts.rich .hero-stats dd { color: var(--on-dark-soft); font-size: 0.92rem; line-height: 1.45; }
+.facts.rich .hero-stats .n { white-space: normal; font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem); margin: 6px 0 6px; }
+.facts.rich .hero-stats .tile-a .n { color: var(--gold); font-size: clamp(2rem, 1.3rem + 2.4vw, 3.4rem); }
+.facts.rich .hero-stats .tile-a dd { max-width: 40ch; }
+@media (hover: hover) { .facts.rich .hero-stats > div:hover { transform: translateY(-3px); box-shadow: 0 30px 50px -30px var(--shadow-deep); } }
+.facts.rich .hero-stats > div:active { transform: translateY(1px); }
+@media (max-width: 599px) {
+  .hero .facts.rich { grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr); column-gap: 20px; row-gap: 24px; margin-top: 44px; padding-top: 36px; align-items: center; }
+  .facts.rich .facts-body { display: contents; }
+  .facts.rich .facts-photo::before { inset: 8px -8px -8px 8px; }
+  .hero .facts.rich .summary { grid-column: 2; grid-row: 1; font-size: clamp(1.12rem, 5vw, 1.4rem); }
+  .hero .facts.rich dl.hero-stats { grid-column: 1 / -1; }
+  .facts.rich .hero-stats > div { padding: 16px 14px 14px; }
+}
+@media (min-width: 600px) and (max-width: 979px) {
+  .hero .facts.rich { grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr); column-gap: 36px; }
+}
+@media (min-width: 980px) {
+  .hero .facts.rich { grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr); column-gap: clamp(48px, 6vw, 96px); }
+}
+@media (prefers-reduced-motion: reduce) { .facts.rich .hero-stats > div, .facts.rich .facts-photo img { transition: none; } }
+
+/* The header changes height when it compacts. Without this, scroll anchoring shifts the page by that
+   difference, so back to top stopped about 8px short of the top. */
+html { overflow-anchor: none; }
 </style>
 </head>
 <body>
@@ -923,13 +981,18 @@ a { color: inherit; }
           </figure>
         </div>
 
-        <div class="facts">
-          <p class="summary">A Marine Corps veteran who learned business on the sales floor, and now builds companies around the people in them.</p>
-          <dl class="hero-stats">
-            <div><dt class="meta">First year as an owner</dt><dd><span class="n">Seven figures</span>in business results, not personal income</dd></div>
-            <div><dt class="meta">Team today</dt><dd><span class="n">About 10</span>plus specialists as needed</dd></div>
-            <div><dt class="meta">Served</dt><dd><span class="n">USMC</span>Honorable Discharge</dd></div>
-          </dl>
+        <div class="facts rich">
+          <figure class="facts-photo" data-reveal>
+            <div class="frame"><img src="images/portrait-polo.jpg" srcset="images/portrait-polo-480.jpg 480w, images/portrait-polo.jpg 800w" sizes="(min-width: 980px) 26vw, 40vw" width="800" height="1000" loading="lazy" decoding="async" alt="Alexander Marshall in a cream polo, standing in front of a painting of gold flowers"></div>
+          </figure>
+          <div class="facts-body">
+            <p class="summary" data-reveal>A Marine Corps veteran who learned business on the sales floor, and now builds companies <em>around the people in them.</em></p>
+            <dl class="hero-stats">
+              <div class="tile-a" data-reveal style="--i:0"><dt class="meta">First year as an owner</dt><dd><span class="n">Seven figures</span>in business results, not personal income</dd></div>
+              <div class="tile-b" data-reveal style="--i:1"><dt class="meta">Team today</dt><dd><span class="n">About 10</span>plus specialists as needed</dd></div>
+              <div class="tile-c" data-reveal style="--i:2"><dt class="meta">Served</dt><dd><span class="n">USMC</span>Honorable Discharge</dd></div>
+            </dl>
+          </div>
         </div>
       </div>
     </div>
@@ -1307,23 +1370,36 @@ a { color: inherit; }
       .observe(document.querySelector('.hero-copy') || hero);
   }
 
-  // One time reveals.
+  // Reveals in both scroll directions: a block animates in whenever it enters the screen,
+  // and resets only once it is completely off screen, so it plays again from the side it re-enters.
+  // Observer callbacks arrive asynchronously, so every decision is re-checked against the live layout.
   if (document.documentElement.classList.contains('js-motion')) {
-    var ro = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); ro.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
-    document.querySelectorAll('[data-reveal]').forEach(function (el) { ro.observe(el); });
-    // Anything already scrolled past (fast scrolling, jumping to an anchor) is shown immediately.
-    var pending = true;
-    addEventListener('scroll', function () {
-      if (!pending) return; pending = false;
-      requestAnimationFrame(function () {
-        pending = true;
-        document.querySelectorAll('[data-reveal]:not(.is-in)').forEach(function (el) {
-          if (el.getBoundingClientRect().top < innerHeight * 0.9) { el.classList.add('is-in'); ro.unobserve(el); }
-        });
+    var items = [].slice.call(document.querySelectorAll('[data-reveal]'));
+    var lastY = scrollY, dir = 1;
+    function inView(r) { return r.top < innerHeight * 0.92 && r.bottom > innerHeight * 0.06; }
+    function offScreen(r) { return r.bottom <= 0 || r.top >= innerHeight; }
+    function sync() {
+      items.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (!el.classList.contains('is-in')) {
+          // Arm the entry direction while hidden, so the reveal starts from the correct side.
+          el.classList.toggle('from-above', dir < 0);
+          if (inView(r)) requestAnimationFrame(function () { requestAnimationFrame(function () { if (inView(el.getBoundingClientRect())) el.classList.add('is-in'); }); });
+        } else if (offScreen(r)) {
+          el.classList.remove('is-in');
+        }
       });
+    }
+    var io = new IntersectionObserver(sync, { rootMargin: '0px', threshold: [0, 0.06, 0.12, 0.3, 0.6, 1] });
+    items.forEach(function (el) { io.observe(el); });
+    var pending = false, idle;
+    addEventListener('scroll', function () {
+      var y = scrollY; if (y !== lastY) { dir = y > lastY ? 1 : -1; lastY = y; }
+      if (!pending) { pending = true; requestAnimationFrame(function () { pending = false; sync(); }); }
+      clearTimeout(idle); idle = setTimeout(sync, 160);
     }, { passive: true });
+    addEventListener('resize', function () { clearTimeout(idle); idle = setTimeout(sync, 200); }, { passive: true });
+    sync();
   }
   // Career line: drawn through the real centre of each marker, redrawn on resize.
   (function () {
@@ -1414,22 +1490,30 @@ a { color: inherit; }
 
     if (!motion || !('IntersectionObserver' in window)) return;
 
+    // Runs each time the element comes into view (scrolling down or up), never twice at once.
     function once(el, fn, th) {
       if (!el) return;
-      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { threshold: th || 0.35 });
+      var busy = false, armed = true;
+      var io = new IntersectionObserver(function (es) {
+        var e = es[0];
+        if (e.isIntersecting && e.intersectionRatio >= (th || 0.35) && armed && !busy) { armed = false; busy = true; fn(function () { busy = false; }); }
+        if (!e.isIntersecting) armed = true;
+      }, { threshold: [0, th || 0.35] });
       io.observe(el);
     }
 
     // Split flap board
     var board = document.getElementById('scene-5');
-    once(board, function () {
-      [].forEach.call(board.querySelectorAll('.tile:not(.sym)'), function (t, i) {
-        var target = t.textContent, n = 0, stops = 8 + i * 3;
+    once(board, function (done) {
+      var tiles = board.querySelectorAll('.tile:not(.sym)'), left = tiles.length;
+      [].forEach.call(tiles, function (t, i) {
+        var target = t.getAttribute('data-final') || t.textContent; t.setAttribute('data-final', target);
+        var n = 0, stops = 8 + i * 3;
         var iv = setInterval(function () {
           n++;
           t.classList.remove('flip'); void t.offsetWidth; t.classList.add('flip');
           t.textContent = n >= stops ? target : String(Math.floor(Math.random() * 10));
-          if (n >= stops) clearInterval(iv);
+          if (n >= stops) { clearInterval(iv); if (--left === 0) done(); }
         }, 70);
       });
     }, 0.5);
@@ -1438,12 +1522,12 @@ a { color: inherit; }
     [].forEach.call(document.querySelectorAll('[data-count]'), function (el) {
       var end = +el.getAttribute('data-count'), pre = el.getAttribute('data-prefix') || '';
       el.textContent = pre + '0';
-      once(el, function () {
+      once(el, function (done) {
         var t0 = performance.now(), dur = 1600;
         (function step(t) {
           var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
           el.textContent = pre + Math.round(end * e).toLocaleString('en-US');
-          if (k < 1) requestAnimationFrame(step);
+          if (k < 1) requestAnimationFrame(step); else done();
         })(t0);
       }, 0.6);
     });
@@ -1476,17 +1560,8 @@ a { color: inherit; }
     }
   })();
 
-  // Reveals: re-check after orientation changes and bfcache restores, so nothing stays hidden.
-  (function () {
-    function sweep() {
-      document.querySelectorAll('[data-reveal]:not(.is-in)').forEach(function (el) {
-        var r = el.getBoundingClientRect();
-        if (r.top < innerHeight * 0.9 && r.bottom > 0 || r.bottom < 0) el.classList.add('is-in');
-      });
-    }
-    addEventListener('orientationchange', function () { setTimeout(sweep, 250); });
-    addEventListener('pageshow', function (e) { if (e.persisted) sweep(); });
-  })();
+  // Reveals: re-check after bfcache restores.
+  addEventListener('pageshow', function (e) { if (e.persisted) window.dispatchEvent(new Event('resize')); });
 
   window.__motionReady = true;
 
