@@ -40,7 +40,7 @@
 }
 </script>
 <script>
-(function(){var d=document.documentElement;if(window.matchMedia&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window){d.classList.add('js-motion');setTimeout(function(){if(!window.__motionReady){var n=document.querySelectorAll('[data-reveal]');for(var i=0;i<n.length;i++)n[i].classList.add('is-in');}},3000);}})();
+(function(){var d=document.documentElement;if(window.matchMedia&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window){d.classList.add('js-motion');var f=function(){if(!window.__motionReady){d.classList.remove('js-motion');}};document.addEventListener('DOMContentLoaded',function(){setTimeout(f,0);});addEventListener('error',function(){setTimeout(f,0);});}})();
 </script>
 <style>
 /* Layout concept: charcoal and ivory carry the page; bronze appears only at the turning points (the headline turn, the $500, the board, seven figures, the primary action). Four original photographs, one per act: opening, lessons, values, invitation. */
@@ -663,6 +663,145 @@ a { color: inherit; }
 @media (min-width: 1920px) { :root { --t-body: 1.25rem; --t-lede: 1.5rem; } }
 /* Very small phones */
 @media (max-width: 359px) { .wordmark { font-size: 1.12rem; } .btn { padding-inline: 18px; } .trio li { font-size: 1.85rem; } }
+
+/* Today photo strip */
+.today { background: var(--night); }
+.today-head { display: grid; gap: 14px; max-width: 40rem; margin-bottom: clamp(36px, 5vw, 64px); }
+.today-head .kicker span { color: var(--bronze); }
+.today-head .h3 { font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3rem); line-height: 1.1; }
+.today-head em { color: var(--bronze); }
+.today-grid { display: grid; grid-template-columns: 1fr 1.18fr 1fr; gap: clamp(16px, 2.4vw, 40px); align-items: start; }
+.today-grid .photo { min-width: 0; position: relative; }
+.today-grid .frame { box-shadow: 0 40px 80px -40px var(--shadow-deep); }
+.today-grid .t-a { margin-top: clamp(40px, 7vw, 110px); }
+.today-grid .t-c { margin-top: clamp(80px, 12vw, 190px); }
+.today-grid .t-b::before { content: ""; position: absolute; inset: 18px -18px -18px 18px; border: 1px solid var(--gold-edge, rgba(199,164,103,.55)); z-index: -1; pointer-events: none; }
+.today-grid .t-a img { object-position: 45% 30%; }
+.today-grid .t-b img { object-position: 50% 30%; }
+.today-grid .t-c img { object-position: 50% 25%; }
+.js-motion .today-grid .photo[data-reveal]:nth-child(2) { transition-delay: 120ms; }
+.js-motion .today-grid .photo[data-reveal]:nth-child(3) { transition-delay: 240ms; }
+
+
+/* ===== Mobile art direction, phase 1: hero, origin story, today ===== */
+/* Section seams: the wine chapter melts into midnight */
+.today::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(48px, 8vw, 120px); background: linear-gradient(var(--wine), rgba(53, 21, 29, 0)); pointer-events: none; z-index: 0; }
+.today > .wrap { position: relative; z-index: 1; }
+.js-motion .today-grid .photo .frame { clip-path: inset(100% 0 0 0); transition: clip-path 1000ms var(--ease); }
+.js-motion .today-grid .photo.is-in .frame { clip-path: inset(0 0 0 0); }
+.js-motion .today-grid .photo.is-in:nth-child(2) .frame { transition-delay: 140ms; }
+.js-motion .today-grid .photo.is-in:nth-child(3) .frame { transition-delay: 280ms; }
+
+@media (max-width: 899px) {
+  /* Today: a layered collage that fits about one screen */
+  .today .wrap { padding-block: clamp(64px, 14vw, 96px); }
+  .today-head { margin-bottom: 28px; }
+  .today-grid { display: block; position: relative; aspect-ratio: 4 / 5; max-width: 560px; margin-inline: auto; }
+  .today-grid .photo { position: absolute; margin: 0; }
+  .today-grid .frame { border: 1px solid rgba(245, 240, 231, 0.14); }
+  .today-grid .t-b { left: 0; top: 0; width: 62%; z-index: 1; }
+  .today-grid .t-a { right: 0; top: 13%; width: 45%; margin: 0; z-index: 2; }
+  .today-grid .t-c { left: 15%; top: 57%; width: 43%; margin: 0; z-index: 3; }
+  .today-grid .t-b::before { inset: 10px -10px -10px 10px; }
+  .today-grid .t-a .frame, .today-grid .t-c .frame { box-shadow: 0 30px 50px -22px rgba(4, 8, 12, 0.95); }
+
+  /* Origin rail becomes a sticky six step progress strip */
+  .rail { display: block; position: sticky; top: var(--head-h, 56px); z-index: 6; margin: 0 calc(-16px - 3vw) 8px; padding: 0 calc(16px + 3vw); background: rgba(53, 21, 29, 0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule-dark); }
+  .rail ol { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+  .rail ol::before { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: var(--progress, 0%); background: var(--gold); transition: width 500ms var(--ease); z-index: 1; }
+  .rail a { display: flex; align-items: center; justify-content: center; min-height: 44px; text-decoration: none; color: var(--on-dark-soft); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; border-bottom: 2px solid rgba(245, 240, 231, 0.16); transition: color 300ms var(--ease); }
+  .rail a b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .rail a span::before { content: "0"; }
+  .rail a[aria-current="step"] { color: var(--gold); }
+  .rail a:active { background: rgba(245, 240, 231, 0.06); }
+  .scene { scroll-margin-top: calc(var(--head-h, 56px) + 64px); }
+  .scenes { gap: clamp(72px, 16vw, 104px); margin-top: 40px; }
+
+
+  /* 2. The stranger: a cascade */
+  .trio li { flex-direction: column; gap: 2px; }
+  .trio li:nth-child(2) { padding-left: 9vw; }
+  .trio li:nth-child(3) { padding-left: 18vw; }
+
+  /* 3. The offer: an ivory note with an inset gold frame */
+  .offer { position: relative; border-top: 0; border-radius: 4px; padding: 30px 26px 28px; box-shadow: 0 30px 60px -30px rgba(4, 8, 12, 0.9), 0 0 0 1px rgba(199, 164, 103, 0.35); }
+  .offer::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(169, 133, 63, 0.45); border-radius: 2px; pointer-events: none; }
+  .offer::after { content: "The offer"; position: absolute; top: 22px; right: 24px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bronze-ink); }
+  .scene .offer .amount { font-size: clamp(4.6rem, 30vw, 7.5rem); }
+  .js-motion #scene-3 .offer { transform: perspective(900px) rotateX(10deg) translateY(10px); transition: transform 900ms var(--ease); }
+  .js-motion #scene-3.is-in .offer { transform: none; }
+  #scene-3 > .scene-no { display: none; }
+
+  /* 4 and 5: the floor and the board run edge to edge */
+  .office .ticker { margin-inline: calc(-16px - 3vw); }
+  .board { margin-inline: calc(-16px - 3vw); padding: 22px calc(16px + 3vw) 24px; border-block: 1px solid rgba(199, 164, 103, 0.3); }
+  .office .quote { font-size: clamp(1.9rem, 8.4vw, 2.6rem); }
+
+  /* 6. The decision: a full width editorial moment in ivory */
+  #scene-6 { margin-inline: calc(-16px - 3vw); padding: 56px calc(16px + 3vw) 52px; background: var(--ivory); color: var(--ink); }
+  #scene-6 .scene-no, #scene-6 .scene-no span:first-child { color: var(--bronze-ink); }
+  #scene-6 p { color: var(--ink-soft); }
+  #scene-6 .decision .big { font-size: clamp(3rem, 15.5vw, 5rem); line-height: 0.98; color: var(--ink); max-width: none; }
+  .js-motion #scene-6 .decision .big { color: transparent; background-image: linear-gradient(90deg, var(--ink) 0 50%, rgba(25, 26, 28, 0.16) 50% 100%); }
+  #scene-6 .decision .after { border-top: 1px solid var(--gold-line); padding-top: 22px; }
+  #scene-6 .decision .after .quote { color: var(--ink); font-size: clamp(1.5rem, 6.6vw, 2rem); }
+}
+@media (max-width: 759px) {
+  /* 1. The visit: the oversized 19 opens the chapter, the copy overlaps it */
+  .scene-visit { gap: 0; }
+  .scene-visit .big-19 { font-size: min(64vw, 22rem); line-height: 0.78; margin-left: -0.04em; color: rgba(199, 164, 103, 0.1); -webkit-text-stroke: 1.5px rgba(199, 164, 103, 0.85); }
+  .scene-visit .copy { margin-top: -0.55em; margin-left: 14%; padding: 20px 0 4px 20px; position: relative; border-left: 1px solid var(--gold-edge); background: linear-gradient(90deg, rgba(53, 21, 29, 0.97), rgba(53, 21, 29, 0.75)); }
+  #beginning .wrap { padding-bottom: 72px; }
+}
+
+@media (max-width: 599px) {
+  /* Hero: full bleed portrait, headline rides over its lower edge */
+  .hero .wrap { padding-top: 0; padding-bottom: 48px; }
+  .hero-grid { gap: 0; }
+  .hero-photo { margin-inline: calc(-16px - 3vw); }
+  .hero-photo .frame { aspect-ratio: auto; height: min(104vw, 54svh); box-shadow: none; }
+  .hero-photo .frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16, 25, 35, 0) 45%, rgba(16, 25, 35, 0.75) 80%, var(--night) 100%); pointer-events: none; }
+  .hero-photo img { object-position: 50% 16%; }
+  .hero-card { display: none; }
+  .hero-copy { position: relative; z-index: 2; margin-top: -76px; gap: 18px; }
+  .hero-copy > .kicker { color: var(--gold); }
+  .hero h1 { font-size: clamp(2rem, 10.4vw, 3.2rem); line-height: 1.02; }
+  .hero .intro { font-size: 1.05rem; line-height: 1.55; }
+  .actions { gap: 10px 22px; }
+  .actions .btn { flex: 1 1 auto; max-width: 260px; }
+
+  /* Hero facts: one feature figure, then two side by side */
+  .facts { margin-top: 40px; padding-top: 22px; gap: 20px; }
+  .facts .summary { font-size: 1.32rem; }
+  .facts dl.hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
+  .hero-stats > div:first-child { grid-column: 1 / -1; }
+  .hero-stats .n { font-size: clamp(1.6rem, 7.4vw, 2.1rem); }
+  .facts dd { font-size: 0.9rem; }
+}
+
+/* ===== Touch and mobile motion: equivalents for every hover effect ===== */
+/* Photos settle into place as they reveal, on every device */
+.js-motion [data-reveal] .frame img, .js-motion .photo[data-reveal] img { transition: transform 1400ms var(--ease); }
+.js-motion .photo[data-reveal]:not(.is-in) .frame img { transform: scale(1.08); }
+/* Press feedback for touch */
+.btn, .text-link, .mark, .rail a, .to-top, .menu summary { -webkit-tap-highlight-color: transparent; }
+.btn:active { transform: translateY(1px) scale(0.985); }
+.mark:active .ring { transform: scale(0.9); }
+.to-top:active { transform: scale(0.94); }
+@media (hover: none) {
+  .numbered li { transition: transform 260ms var(--ease), box-shadow 260ms var(--ease), background-color 260ms var(--ease); }
+  .numbered li:active { transform: translateY(-2px) scale(0.99); box-shadow: 0 20px 34px -26px var(--shadow-deep); background: #E4D4B5; }
+  .numbered li.is-in { transition-delay: 0ms; }
+  .book-stage { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .book-stage.is-lifted .book, .js-motion .book-stage[data-reveal].is-in.is-lifted .book { transform: rotateX(4deg) rotateY(-16deg) rotateZ(0deg) translateY(-8px); transition-duration: 900ms; }
+  .book-stage.is-lifted .sheen { background-position: 0 0; }
+  .js-motion .book-stage.is-in .sheen { animation: sheen-once 1800ms 900ms var(--ease) both; }
+}
+@keyframes sheen-once { from { background-position: 100% 0; } to { background-position: 0 0; } }
+/* Mobile menu opens with a short drop instead of snapping */
+@media (prefers-reduced-motion: no-preference) { .menu[open] ul { animation: menu-in 260ms var(--ease) both; } }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .btn:active, .mark:active .ring, .to-top:active, .numbered li:active { transform: none; } }
 </style>
 </head>
 <body>
@@ -817,6 +956,28 @@ a { color: inherit; }
               </div>
             </article>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band dark today grain" id="today" aria-labelledby="today-title">
+    <div class="wrap">
+      <div class="inner">
+        <div class="today-head" data-reveal>
+          <p class="kicker"><span>Today</span></p>
+          <h2 class="h3" id="today-title">Nineteen was the start. <em>This is Alexander now.</em></h2>
+        </div>
+        <div class="today-grid">
+          <figure class="photo t-a" data-reveal>
+            <div class="frame"><img src="images/portrait-everyday.jpg" srcset="images/portrait-everyday-480.jpg 480w, images/portrait-everyday.jpg 800w" sizes="(min-width: 900px) 30vw, 50vw" width="800" height="1000" loading="lazy" decoding="async" alt="Alexander Marshall in a checked shirt, smiling, with a coffee in hand"></div>
+          </figure>
+          <figure class="photo t-b" data-reveal>
+            <div class="frame"><img src="images/portrait-new-york.jpg" srcset="images/portrait-new-york-480.jpg 480w, images/portrait-new-york.jpg 800w" sizes="(min-width: 900px) 34vw, 62vw" width="800" height="1000" loading="lazy" decoding="async" alt="Alexander Marshall in a New York varsity jacket, standing beside a black sedan"></div>
+          </figure>
+          <figure class="photo t-c" data-reveal>
+            <div class="frame"><img src="images/portrait-close.jpg" srcset="images/portrait-close-480.jpg 480w, images/portrait-close.jpg 800w" sizes="(min-width: 900px) 30vw, 60vw" width="800" height="1000" loading="lazy" decoding="async" alt="Close portrait of Alexander Marshall in a New York cap"></div>
+          </figure>
         </div>
       </div>
     </div>
@@ -1234,6 +1395,33 @@ a { color: inherit; }
         card.addEventListener('pointerleave', function () { card.style.transition = ''; card.style.transform = ''; });
       });
     }
+  })();
+
+
+  (function () {
+    var h = document.querySelector('.site-head');
+    function setH() { if (h) document.documentElement.style.setProperty('--head-h', h.offsetHeight + 'px'); }
+    setH(); window.addEventListener('resize', setH, { passive: true });
+  })();
+
+  // Touch: tapping the book lifts it, the same pose a mouse hover gives.
+  (function () {
+    var stage = document.querySelector('.book-stage'); if (!stage) return;
+    if (matchMedia('(hover: none)').matches) {
+      stage.addEventListener('click', function () { stage.classList.toggle('is-lifted'); });
+    }
+  })();
+
+  // Reveals: re-check after orientation changes and bfcache restores, so nothing stays hidden.
+  (function () {
+    function sweep() {
+      document.querySelectorAll('[data-reveal]:not(.is-in)').forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < innerHeight * 0.9 && r.bottom > 0 || r.bottom < 0) el.classList.add('is-in');
+      });
+    }
+    addEventListener('orientationchange', function () { setTimeout(sweep, 250); });
+    addEventListener('pageshow', function (e) { if (e.persisted) sweep(); });
   })();
 
   window.__motionReady = true;
