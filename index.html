@@ -163,7 +163,7 @@ a { color: inherit; }
 /* Header */
 .site-head { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(16, 25, 35, 0.94); color: var(--on-dark); border-bottom: 1px solid var(--rule-dark); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .site-head .bar { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.site-head .row { max-width: var(--container); margin-inline: auto; padding-inline: clamp(0px, 3vw, 40px); display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; transition: min-height var(--dur-hover) var(--ease); }
+.site-head .row { position: relative; max-width: var(--container); margin-inline: auto; padding-inline: clamp(0px, 3vw, 40px); display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; transition: min-height var(--dur-hover) var(--ease); }
 .site-head { transition: box-shadow var(--dur-hover) var(--ease), background-color var(--dur-hover) var(--ease); }
 .site-head.is-scrolled { box-shadow: 0 14px 30px -24px var(--shadow-deep); background: rgba(16, 25, 35, 0.98); }
 .site-head.is-scrolled .row { min-height: 54px; }
@@ -224,7 +224,7 @@ a { color: inherit; }
 
 .hero-copy { display: grid; gap: 26px; align-content: center; }
 .hero h1 { font-family: var(--display); font-size: var(--t-hero); line-height: 1.02; letter-spacing: -0.025em; }
-.hero h1 .turn { display: block; color: var(--bronze); font-style: italic; }
+.hero h1 .turn { color: var(--bronze); font-style: italic; }
 .hero .intro { max-width: 31rem; color: var(--on-dark-soft); }
 .hero .intro strong { color: var(--on-dark); font-weight: 500; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
@@ -547,6 +547,82 @@ a { color: inherit; }
 .channels dd { margin: 0; overflow-wrap: anywhere; min-width: 0; }
 .corner { font-family: var(--display); font-size: var(--t-h3); line-height: 1.3; max-width: 30ch; }
 
+
+/* ===== 10x layer: one motion and depth system, used where it carries the story ===== */
+.inner { position: relative; isolation: isolate; }
+.chapter-ghost::before { content: attr(data-n); }
+.chapter-ghost { z-index: -1; }
+.dark .chapter-ghost, .dark-2 .chapter-ghost, .m-panel .chapter-ghost { color: rgba(245, 240, 231, 0.045); }
+.m-panel { overflow: hidden; }
+.m-panel .chapter-ghost { top: -0.18em; right: -0.04em; }
+
+/* Film grain on the dark chapters: a still texture, no animation */
+.grain { position: relative; }
+.grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.grain > .wrap { position: relative; z-index: 1; }
+
+/* Reading progress in the header */
+.read-bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--read, 0)); pointer-events: none; }
+
+/* Hero: the gold underline draws under the turn of the headline; the portrait drifts slightly on scroll */
+.hero h1 .turn { display: inline; -webkit-box-decoration-break: clone; box-decoration-break: clone; background-image: linear-gradient(var(--gold), var(--gold)); background-repeat: no-repeat; background-position: 0 92%; background-size: 100% 2px; padding-bottom: 0.06em; }
+.js-motion .hero h1 .turn { background-size: 0% 2px; animation: underline 1100ms 650ms var(--ease) forwards; }
+@keyframes underline { to { background-size: 100% 2px; } }
+.hero-photo .frame img { will-change: transform; }
+.js-motion .hero-photo .frame img { transform: translateY(var(--drift, 0px)) scale(1.06); }
+
+/* Scene 2: the three facts arrive one after another */
+.js-motion .scene .trio li { opacity: 0; transform: translateX(-18px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+.js-motion .scene.is-in .trio li { opacity: 1; transform: none; }
+.js-motion .scene.is-in .trio li:nth-child(2) { transition-delay: 180ms; }
+.js-motion .scene.is-in .trio li:nth-child(3) { transition-delay: 360ms; }
+
+/* Scene 4: the sales floor as a moving ticker */
+.ticker { display: grid; gap: 10px; overflow: hidden; padding-block: 6px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.ticker .row { display: flex; width: max-content; gap: 0; }
+.ticker .row span { font-size: clamp(0.82rem, 0.74rem + 0.3vw, 0.98rem); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(245, 240, 231, 0.62); white-space: nowrap; padding-right: 2.2em; }
+.ticker .row span b { color: var(--gold); font-weight: 600; margin-right: 2.2em; }
+.ticker .row.alt span { color: rgba(245, 240, 231, 0.4); font-family: var(--display); font-style: italic; letter-spacing: 0.02em; text-transform: none; font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem); }
+@media (prefers-reduced-motion: no-preference) {
+  .ticker .row { animation: tick 38s linear infinite; }
+  .ticker .row.alt { animation-duration: 52s; animation-direction: reverse; }
+}
+@keyframes tick { to { transform: translateX(-50%); } }
+
+/* Scene 5: split flap tiles settle one by one */
+.tile.flip { animation: flap 90ms linear; }
+@keyframes flap { 0% { transform: rotateX(0); } 50% { transform: rotateX(-70deg); } 100% { transform: rotateX(0); } }
+
+/* Scene 6: the decision fills in as it is read */
+.js-motion .decision .big { color: transparent; background: linear-gradient(90deg, var(--on-dark) 0 50%, rgba(245, 240, 231, 0.18) 50% 100%); background-size: 200% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; transition: background-position 1600ms var(--ease) 200ms; }
+.js-motion #scene-6.is-in .decision .big { background-position: 0 0; }
+
+/* Milestones: figures count up once */
+.count { font-variant-numeric: tabular-nums lining-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ach-feature .fig { background: linear-gradient(100deg, var(--gold) 0%, #F0D9A3 45%, var(--gold) 60%); background-size: 220% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; color: transparent; transition: background-position 1800ms var(--ease) 300ms; }
+.ach-feature.is-in .fig, html:not(.js-motion) .ach-feature .fig { background-position: 0 0; }
+
+/* Lessons: cards tilt toward the pointer on devices that hover */
+.numbered { perspective: 1200px; }
+.numbered li { transform-style: preserve-3d; will-change: transform; }
+.numbered li .h3, .numbered li p { transform: translateZ(18px); }
+
+/* Photographs: a slow, contained zoom on hover */
+.photo .frame img { transition: transform 900ms var(--ease); }
+@media (hover: hover) { .photo:hover .frame img, .js-motion .photo.is-in:hover .frame img { transform: scale(1.045); } }
+
+/* Values: what success means now, as a slow band between chapters */
+.values-band { overflow: hidden; border-top: 1px solid var(--rule-light); margin-top: clamp(64px, 9vw, 120px); padding-block: clamp(22px, 3vw, 36px); -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.values-band .row { display: flex; width: max-content; }
+.values-band span { font-family: var(--display); font-size: clamp(2.6rem, 1.6rem + 4vw, 5.6rem); line-height: 1.05; white-space: nowrap; padding-right: 0.6em; color: transparent; -webkit-text-stroke: 1px rgba(25, 26, 28, 0.55); }
+.values-band span:nth-child(odd) { color: var(--ink); -webkit-text-stroke: 0; }
+.values-band span i { font-style: italic; color: var(--bronze-ink); -webkit-text-stroke: 0; padding-left: 0.6em; }
+@supports not (-webkit-text-stroke: 1px black) { .values-band span { color: var(--ink-soft); } }
+@media (prefers-reduced-motion: no-preference) { .values-band .row { animation: tick 60s linear infinite; } }
+@media (prefers-reduced-motion: reduce) { .values-band .row { flex-wrap: wrap; width: auto; } }
+
 /* Footer */
 .site-foot .wrap { padding-block: 36px calc(36px + env(safe-area-inset-bottom, 0px)); }
 .site-foot .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 14px; }
@@ -598,6 +674,7 @@ a { color: inherit; }
   <div class="bar">
     <div class="row">
       <a class="wordmark" href="#top">Alexander Marshall</a>
+      <span class="read-bar" aria-hidden="true"></span>
       <nav class="nav" aria-label="Sections">
         <ul class="nav-links">
           <li><a href="#beginning">The beginning</a></li>
@@ -625,13 +702,13 @@ a { color: inherit; }
 
 <main id="main">
 
-  <section class="band dark hero" id="top" aria-labelledby="hero-title">
+  <section class="band dark hero grain" id="top" aria-labelledby="hero-title">
     <div class="wrap">
       <div class="inner">
         <div class="hero-grid">
           <div class="hero-copy">
             <p class="kicker">New York</p>
-            <h1 id="hero-title">One conversation <span class="turn">changed everything.</span></h1>
+            <h1 id="hero-title">One conversation<br> <span class="turn">changed everything.</span></h1>
             <p class="intro lede"><strong>Alexander Marshall</strong> was nineteen and working at UPS when a chance encounter pulled him into sales. Today he works in consulting, growth operations and relationship management.</p>
             <div class="actions">
               <a class="btn" href="#contact">Start a Conversation</a>
@@ -656,9 +733,10 @@ a { color: inherit; }
     </div>
   </section>
 
-  <section class="band dark-2 wine" id="beginning" aria-labelledby="ch1-title">
+  <section class="band dark-2 wine grain" id="beginning" aria-labelledby="ch1-title">
     <div class="wrap">
       <div class="inner">
+        <span class="chapter-ghost" data-n="01" aria-hidden="true"></span>
         <div class="chapter">
           <p class="kicker"><span>01</span>The beginning</p>
           <h2 class="h2" id="ch1-title">Six moments on an ordinary day.</h2>
@@ -710,7 +788,10 @@ a { color: inherit; }
             <article class="scene" data-reveal id="scene-4" aria-labelledby="s4">
               <p class="scene-no"><span>4</span><span id="s4">The office</span></p>
               <div class="office">
-                <p class="noise" aria-hidden="true">Phones ringing, call after call, deals closing, the next opportunity, controlled chaos</p>
+                <div class="ticker" aria-hidden="true">
+                  <div class="row"><span>Phones ringing<b>·</b></span><span>Call after call<b>·</b></span><span>Deals closing<b>·</b></span><span>The next opportunity<b>·</b></span><span>Controlled chaos<b>·</b></span><span>Phones ringing<b>·</b></span><span>Call after call<b>·</b></span><span>Deals closing<b>·</b></span><span>The next opportunity<b>·</b></span><span>Controlled chaos<b>·</b></span></div>
+                  <div class="row alt"><span>Salespeople moving from call to call</span><span>chasing the next one</span><span>energy everywhere</span><span>Salespeople moving from call to call</span><span>chasing the next one</span><span>energy everywhere</span></div>
+                </div>
                 <p>He went. At nineteen, it reminded him of The Wolf of Wall Street.</p>
                 <blockquote class="quote">Except this wasn't a movie. This was real.</blockquote>
               </div>
@@ -744,7 +825,7 @@ a { color: inherit; }
   <section class="band ivory" id="career" aria-labelledby="ch2-title">
     <div class="wrap">
       <div class="inner">
-        <span class="chapter-ghost" aria-hidden="true">02</span>
+        <span class="chapter-ghost" data-n="02" aria-hidden="true"></span>
         <div class="career-head">
           <div class="chapter">
             <p class="kicker"><span>02</span>Career</p>
@@ -802,6 +883,7 @@ a { color: inherit; }
     <div class="wrap">
       <div class="inner">
         <div class="m-panel">
+        <span class="chapter-ghost" data-n="03" aria-hidden="true"></span>
         <div class="chapter">
           <p class="kicker"><span>03</span>Milestones</p>
           <h2 class="h2" id="ch3-title">The numbers behind the journey.</h2>
@@ -813,7 +895,7 @@ a { color: inherit; }
             <p class="ctx">Reached in the first year he owned a business.</p>
           </div>
           <dl class="ach-list">
-            <div data-reveal style="--i:1"><dt>First year as an employee</dt><dd><span class="fig">$100,000</span><p>His first $100,000 in sales.</p></dd></div>
+            <div data-reveal style="--i:1"><dt>First year as an employee</dt><dd><span class="fig"><span class="sr">$100,000</span><span class="count" aria-hidden="true" data-count="100000" data-prefix="$">$100,000</span></span><p>His first $100,000 in sales.</p></dd></div>
             <div data-reveal style="--i:2"><dt>Across his career</dt><dd><span class="fig">Millions</span><p>In business and sales he contributed to, including multi seven figure results.</p></dd></div>
             <div data-reveal style="--i:3"><dt>Service</dt><dd><span class="fig">Honorable Discharge</span><p>United States Marine Corps.</p></dd></div>
           </dl>
@@ -888,6 +970,7 @@ a { color: inherit; }
             <div class="frame"><img src="images/portrait-night-water.jpg" srcset="images/portrait-night-water-480.jpg 480w, images/portrait-night-water.jpg 800w" sizes="(min-width: 980px) 36vw, 100vw" width="800" height="1000" loading="lazy" decoding="async" alt="Alexander Marshall smiling on a dock at night, with waterfront houses behind him"></div>
           </figure>
         </div>
+        <div class="values-band" aria-hidden="true"><div class="row"><span>Health</span><span>Family and friends</span><span>Experiences<i>·</i></span><span>The people you help</span><span>What you share<i>·</i></span><span>Health</span><span>Family and friends</span><span>Experiences<i>·</i></span><span>The people you help</span><span>What you share<i>·</i></span></div></div>
       </div>
     </div>
   </section>
@@ -921,7 +1004,7 @@ a { color: inherit; }
     </div>
   </section>
 
-  <section class="band dark contact" id="contact" aria-labelledby="contact-title">
+  <section class="band dark contact grain" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <div class="inner">
         <div class="contact-grid">
@@ -1006,6 +1089,17 @@ a { color: inherit; }
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); ro.unobserve(e.target); } });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
     document.querySelectorAll('[data-reveal]').forEach(function (el) { ro.observe(el); });
+    // Anything already scrolled past (fast scrolling, jumping to an anchor) is shown immediately.
+    var pending = true;
+    addEventListener('scroll', function () {
+      if (!pending) return; pending = false;
+      requestAnimationFrame(function () {
+        pending = true;
+        document.querySelectorAll('[data-reveal]:not(.is-in)').forEach(function (el) {
+          if (el.getBoundingClientRect().top < innerHeight * 0.9) { el.classList.add('is-in'); ro.unobserve(el); }
+        });
+      });
+    }, { passive: true });
   }
   // Career line: drawn through the real centre of each marker, redrawn on resize.
   (function () {
@@ -1076,6 +1170,70 @@ a { color: inherit; }
       scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       var target = document.querySelector('.wordmark'); if (target) target.focus({ preventScroll: true });
     });
+  })();
+
+  // ---- 10x layer behaviour ----
+  (function () {
+    var root = document.documentElement, motion = root.classList.contains('js-motion');
+    var bar = document.querySelector('.read-bar');
+    var heroImg = document.querySelector('.hero-photo .frame img');
+    var ticking = false;
+    function onScroll() {
+      ticking = false;
+      var max = root.scrollHeight - innerHeight, y = scrollY;
+      if (bar) bar.style.setProperty('--read', max > 0 ? (y / max).toFixed(4) : 0);
+      if (motion && heroImg && y < innerHeight * 1.2) heroImg.style.setProperty('--drift', (y * 0.06).toFixed(1) + 'px');
+    }
+    addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    onScroll();
+
+    if (!motion || !('IntersectionObserver' in window)) return;
+
+    function once(el, fn, th) {
+      if (!el) return;
+      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { threshold: th || 0.35 });
+      io.observe(el);
+    }
+
+    // Split flap board
+    var board = document.getElementById('scene-5');
+    once(board, function () {
+      [].forEach.call(board.querySelectorAll('.tile:not(.sym)'), function (t, i) {
+        var target = t.textContent, n = 0, stops = 8 + i * 3;
+        var iv = setInterval(function () {
+          n++;
+          t.classList.remove('flip'); void t.offsetWidth; t.classList.add('flip');
+          t.textContent = n >= stops ? target : String(Math.floor(Math.random() * 10));
+          if (n >= stops) clearInterval(iv);
+        }, 70);
+      });
+    }, 0.5);
+
+    // Count up
+    [].forEach.call(document.querySelectorAll('[data-count]'), function (el) {
+      var end = +el.getAttribute('data-count'), pre = el.getAttribute('data-prefix') || '';
+      el.textContent = pre + '0';
+      once(el, function () {
+        var t0 = performance.now(), dur = 1600;
+        (function step(t) {
+          var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+          el.textContent = pre + Math.round(end * e).toLocaleString('en-US');
+          if (k < 1) requestAnimationFrame(step);
+        })(t0);
+      }, 0.6);
+    });
+
+    // Lesson cards tilt
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      [].forEach.call(document.querySelectorAll('.numbered li'), function (card) {
+        card.addEventListener('pointermove', function (e) {
+          var r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+          card.style.transition = 'transform 120ms linear, box-shadow 320ms, background-color 320ms';
+          card.style.transform = 'translateY(-4px) rotateX(' + (-y * 7).toFixed(2) + 'deg) rotateY(' + (x * 7).toFixed(2) + 'deg)';
+        });
+        card.addEventListener('pointerleave', function () { card.style.transition = ''; card.style.transform = ''; });
+      });
+    }
   })();
 
   window.__motionReady = true;
