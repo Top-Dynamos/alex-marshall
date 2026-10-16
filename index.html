@@ -923,6 +923,11 @@ a { color: inherit; }
 /* The header changes height when it compacts. Without this, scroll anchoring shifts the page by that
    difference, so back to top stopped about 8px short of the top. */
 html { overflow-anchor: none; }
+
+/* Phone photos fade into the section instead of ending on a hard edge (the film grain sits behind content) */
+@media (max-width: 599px) {
+  .hero-photo .frame, .contact .photo .frame { -webkit-mask-image: linear-gradient(180deg, #000 55%, rgba(0, 0, 0, 0.6) 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, rgba(0, 0, 0, 0.6) 78%, transparent 100%); background: transparent; }
+}
 </style>
 </head>
 <body>
@@ -1550,6 +1555,8 @@ html { overflow-anchor: none; }
     var h = document.querySelector('.site-head');
     function setH() { if (h) document.documentElement.style.setProperty('--head-h', h.offsetHeight + 'px'); }
     setH(); window.addEventListener('resize', setH, { passive: true });
+    // The header shrinks once the page scrolls; keep the sticky step strip flush beneath it.
+    if (h && 'ResizeObserver' in window) new ResizeObserver(setH).observe(h);
   })();
 
   // Touch: tapping the book lifts it, the same pose a mouse hover gives.
